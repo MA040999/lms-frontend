@@ -13,22 +13,34 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async signIn({ account, profile }) {
-      console.log("🚀 ~ profile:", profile);
-      console.log("🚀 ~ account:", account);
 
-      //   try {
-      //     await serverRequest(HTTP_METHODS.POST, SERVER_API_ENDPOINTS.REGISTER, {
-      //       id: account?.userId,
-      //       name: profile?.name,
-      //       email: profile?.email,
-      //     });
+        // try {
+        //   await serverRequest(HTTP_METHODS.POST, SERVER_API_ENDPOINTS.REGISTER, {
+        //     id: profile?.sub,
+        //     name: profile?.name,
+        //     email: profile?.email,
+        //     image: profile?.image
+        //   });
 
-      //     return true;
-      //   } catch (error) {
-      //     return false;
-      //   }
+        //   return true;
+        // } catch (error) {
+        //   return false;
+        // }
       return true;
     },
+    async jwt({ token, account }) {
+      if (account) {
+        token.accessToken = account.id_token
+      }
+      return token
+    },
+    async session({ session, token }) {
+      session.accessToken = token.accessToken as string
+      return session
+    },
+    async redirect({ baseUrl }) {
+      return baseUrl
+    }
   },
 };
 

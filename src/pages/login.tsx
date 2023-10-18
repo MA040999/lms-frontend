@@ -1,13 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
+import { signIn } from "next-auth/react";
 import Image from "next/image";
 
 export default function Login() {
+  const handleLogin = () => {
+    signIn("google");
+  };
+
   return (
     <div className="w-full min-h-screen justify-center items-center flex flex-col gap-7">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Image
-          src="/next.svg"
+          src="/logo.svg"
           alt="Logo"
           className="mx-auto h-10 w-auto"
           width={100}
@@ -18,7 +23,7 @@ export default function Login() {
           Login to continue
         </h2>
       </div>
-      <Button variant="outline" size={"lg"} type="button">
+      <Button onClick={handleLogin} variant="outline" size={"lg"} type="button">
         <Icons.google className="mr-2 h-4 w-4" />
         Continue with Google
       </Button>
