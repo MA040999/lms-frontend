@@ -2,7 +2,11 @@ import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Poppins as FontSans } from "next/font/google";
-import { SessionProvider } from "next-auth/react"
+import { SessionProvider } from "next-auth/react";
+import { Fragment } from "react";
+import Layout from "@/components/Layout";
+import Head from "next/head";
+import { BASE_APP_PATH } from "@/utils/constants";
 
 export const fontSans = FontSans({
   subsets: ["latin"],
@@ -11,17 +15,33 @@ export const fontSans = FontSans({
   display: "swap",
 });
 
-export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+  router,
+}: AppProps) {
+  const isLayoutHidden = [`/login`].includes(router.pathname);
+
+  const LayoutComponent = isLayoutHidden ? Fragment : Layout;
+
   return (
     <SessionProvider session={session}>
-      <main
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
-        )}
-      >
-        <Component {...pageProps} />
-      </main>
+      <LayoutComponent>
+        <>
+          <Head>
+            <link rel="icon" href={BASE_APP_PATH + "favicon.ico"} />
+            <title>Gufhtugu - Courses and Certification</title>
+          </Head>
+          <style jsx global>{`
+            :root {
+              --font-sans: ${fontSans.style.fontFamily};
+            }
+          `}</style>
+          <main>
+            <Component {...pageProps} />
+          </main>
+        </>
+      </LayoutComponent>
     </SessionProvider>
   );
 }
