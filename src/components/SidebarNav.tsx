@@ -14,7 +14,7 @@ const SidebarNav = ({ items }: SidebarNavProps) => {
 
   return (
     <aside
-      className={`w-full h-full sticky bg-secondary col-start-1 col-end-2 row-start-2 z-10 border-r`}
+      className={`h-[calc(100vh-4rem)] w-full sticky top-16 left-0 bg-secondary col-start-1 row-start-2 z-20 border-r overscroll-y-contain`}
       aria-label="Sidebar"
     >
       <div className="h-full flex flex-col pb-5 overflow-hidden">

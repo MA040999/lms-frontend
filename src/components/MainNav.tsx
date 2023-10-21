@@ -14,7 +14,7 @@ interface MainNavProps {
 export function MainNav({ items }: MainNavProps) {
   const pathname = usePathname();
   return (
-    <div className="sticky z-10 col-start-1 col-end-3 flex gap-6 md:gap-10 px-10 py-4 border-b">
+    <div className="sticky top-0 h-16 z-10 col-start-1 col-end-3 flex gap-6 md:gap-10 px-10 py-4 border-b bg-background">
       <Link href="/" className="flex items-center space-x-2">
         <Icons.logo className="h-6 w-6 text-primary" />
       </Link>
