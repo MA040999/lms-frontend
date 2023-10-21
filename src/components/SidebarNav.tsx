@@ -25,11 +25,11 @@ const SidebarNav = ({ items }: SidebarNavProps) => {
                 <Link
                   href={item.href}
                   className={cn(
-                    "group flex w-full items-center justify-center rounded-md border border-transparent px-2 py-1",
+                    "group flex w-full items-center justify-center rounded-md border border-transparent px-2 py-1 transition-colors",
                     item.disabled && "cursor-not-allowed opacity-60",
                     pathname === item.href
                       ? "font-medium text-primary bg-primary/10"
-                      : "text-muted-foreground"
+                      : "text-muted-foreground hover:bg-secondary-foreground/5"
                   )}
                   target={item.external ? "_blank" : ""}
                   rel={item.external ? "noreferrer" : ""}

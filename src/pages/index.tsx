@@ -20,7 +20,7 @@ export default function Home() {
   const { data: courses, isLoading } = useCourses();
 
   return (
-    <div className="flex flex-col items-center pt-8 max-h-full">
+    <div className="flex flex-col items-center pt-8">
       <h2 className="text-2xl font-medium">
         Greetings, {session.data?.user?.name}!
       </h2>

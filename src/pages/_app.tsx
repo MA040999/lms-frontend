@@ -1,9 +1,8 @@
-import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Poppins as FontSans } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import Layout from "@/components/Layout";
 import Head from "next/head";
 import { BASE_APP_PATH } from "@/utils/constants";
@@ -16,16 +15,25 @@ export const fontSans = FontSans({
   display: "swap",
 });
 
-const queryClient = new QueryClient();
-
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
   router,
 }: AppProps) {
-  const isLayoutHidden = [`/login`].includes(router.pathname);
+  const isLayoutHidden = [`/login`, '/courses/[courseId]/[lectureId]'].includes(router.pathname);
 
   const LayoutComponent = isLayoutHidden ? Fragment : Layout;
+
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 60 * 1000,
+          },
+        },
+      })
+  );
 
   return (
     <QueryClientProvider client={queryClient}>
