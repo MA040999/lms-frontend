@@ -57,9 +57,9 @@ const Course = ({
             </div>
           )}
         </div>
-        <div className="bg-primary/10 min-h-[200px] p-8 text-secondary-foreground">
+        <div className="bg-primary/10 min-h-[100px] p-8 text-secondary-foreground">
           <h3 className="text-2xl font-medium">Takeaway Skills</h3>
-          <div className="flex flex-col w-full gap-6 pt-6">
+          <div className="sm:grid sm:grid-cols-2 flex flex-col w-full gap-6 pt-6">
             {courseDetails?.takeaways.map((takeaway, idx) => (
               <div key={idx} className="flex gap-2">
                 <Icons.checkMark className="text-primary w-6 h-6" />

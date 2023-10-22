@@ -5,4 +5,7 @@ export const queryKeys = createQueryKeyStore({
     detail: (courseId: string) => [courseId],
     list: null,
   },
+  quizzes: {
+    module: (moduleId: string) => [moduleId]
+  }
 })

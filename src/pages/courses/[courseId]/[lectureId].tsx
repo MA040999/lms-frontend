@@ -18,7 +18,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
-import Markdown from 'react-markdown'
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const LectureContent = ({
@@ -97,6 +96,17 @@ const LectureContent = ({
                           </Link>
                         </div>
                       ))}
+                      <div className="flex gap-1 w-full ml-2">
+                        <div className="w-[1.5px] min-h-full bg-secondary-foreground"></div>
+                        <Link
+                          className={cn(
+                            "flex flex-1 ml-1 mr-7 py-2 rounded-md"
+                          )}
+                          href={`/quizzes/${module.courseId}/${module.id}`}
+                        >
+                          <p className="pl-4 pr-2 text-primary font-bold">Quiz</p>
+                        </Link>
+                      </div>
                     </AccordionContent>
                   </AccordionItem>
                 ))}
@@ -104,7 +114,7 @@ const LectureContent = ({
             </div>
           </ScrollArea>
         </aside>
-        <article className="prose prose-blue p-10"><Markdown>{content}</Markdown></article>
+        <article dangerouslySetInnerHTML={{__html: content}} className="prose prose-blue p-10"/>
       </div>
     </HydrationBoundary>
   );

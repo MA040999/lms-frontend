@@ -20,7 +20,7 @@ export default function App({
   pageProps: { session, ...pageProps },
   router,
 }: AppProps) {
-  const isLayoutHidden = [`/login`, '/courses/[courseId]/[lectureId]'].includes(router.pathname);
+  const isLayoutHidden = [`/login`, '/courses/[courseId]/[lectureId]', '/quizzes/[courseId]/[moduleId]'].includes(router.pathname);
 
   const LayoutComponent = isLayoutHidden ? Fragment : Layout;
 
