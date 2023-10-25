@@ -49,8 +49,8 @@ export default function App({
     router.events.on("routeChangeStart", () => {
       setRouteProgress(0);
       timer = setInterval(() => {
-        setRouteProgress(currentRouteProgress => currentRouteProgress + 10);
-      }, 500);
+        setRouteProgress(currentRouteProgress => currentRouteProgress + 5);
+      }, 800);
     });
 
     router.events.on("routeChangeComplete", () => {
