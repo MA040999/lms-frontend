@@ -40,7 +40,7 @@ const LectureContent = ({
         }
       })
     );
-  }, [courseDetails]);
+  }, [courseDetails, lectureId]);
 
   return (
     <HydrationBoundary state={dehydratedState}>

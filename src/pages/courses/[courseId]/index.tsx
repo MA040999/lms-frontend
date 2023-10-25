@@ -32,7 +32,7 @@ const Course = ({
   return (
     <HydrationBoundary state={dehydratedState}>
       <div className="flex flex-col">
-        <div className="bg-primary flex min-h-[300px] justify-center gap-4 p-8 text-primary-foreground">
+        <div className="bg-primary flex min-h-[300px] justify-center gap-4 p-4 sm:p-8 text-primary-foreground">
           {courseDetails && (
             <div className="flex w-full flex-col gap-5 justify-center">
               <Image
@@ -57,7 +57,7 @@ const Course = ({
             </div>
           )}
         </div>
-        <div className="bg-primary/10 min-h-[100px] p-8 text-secondary-foreground">
+        <div className="bg-primary/10 min-h-[100px] p-4 sm:p-8 text-secondary-foreground">
           <h3 className="text-2xl font-medium">Takeaway Skills</h3>
           <div className="sm:grid sm:grid-cols-2 flex flex-col w-full gap-6 pt-6">
             {courseDetails?.takeaways.map((takeaway, idx) => (
@@ -68,22 +68,22 @@ const Course = ({
             ))}
           </div>
         </div>
-        <div className="p-8">
+        <div className="p-4 sm:p-8">
           <h3 className="text-2xl font-medium">Course Overview</h3>
           <p className="pt-6">{courseDetails?.synopsis}</p>
         </div>
-        <div className="p-8">
+        <div className="p-4 sm:p-8">
           <h3 className="text-2xl font-medium">Course Content</h3>
           <Accordion type="multiple" className="w-full">
             {courseDetails?.modules.map((module, idx) => (
               <AccordionItem key={module.id} value={module.id} className="py-4">
-                <AccordionTrigger className="hover:no-underline hover:bg-secondary p-4 rounded-md">
+                <AccordionTrigger className="hover:no-underline hover:bg-secondary p-2 gap-2 rounded-md">
                   <div className="flex gap-4">
-                    <span className="w-6 flex items-center justify-center h-6 rounded-sm border">
+                    <span className="w-6 shrink-0 flex items-center justify-center h-6 rounded-sm border">
                       {idx + 1}
                     </span>
-                    <div className="flex flex-col items-start gap-2">
-                      <p className="text-base">{module.title}</p>
+                    <div className="flex flex-col text-left items-start gap-2 whitespace-break-spaces">
+                      <p className="text-base [overflow-wrap:anywhere]">{module.title}</p>
                       <p className="text-sm font-thin">
                         {module._count.lectures} Lectures
                       </p>

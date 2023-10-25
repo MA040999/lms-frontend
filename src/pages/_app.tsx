@@ -2,11 +2,12 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Poppins as FontSans } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import Head from "next/head";
 import { BASE_APP_PATH } from "@/utils/constants";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Progress } from "@/components/ui/progress"
 
 export const fontSans = FontSans({
   subsets: ["latin"],
@@ -20,7 +21,11 @@ export default function App({
   pageProps: { session, ...pageProps },
   router,
 }: AppProps) {
-  const isLayoutHidden = [`/login`, '/courses/[courseId]/[lectureId]', '/quizzes/[courseId]/[moduleId]'].includes(router.pathname);
+  const isLayoutHidden = [
+    `/login`,
+    "/courses/[courseId]/[lectureId]",
+    "/quizzes/[courseId]/[moduleId]",
+  ].includes(router.pathname);
 
   const LayoutComponent = isLayoutHidden ? Fragment : Layout;
 
@@ -35,9 +40,32 @@ export default function App({
       })
   );
 
+  const [routeProgress, setRouteProgress] = useState(0);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    let timeoutTimer: NodeJS.Timeout;
+
+    router.events.on("routeChangeStart", () => {
+      setRouteProgress(0);
+      timer = setInterval(() => {
+        setRouteProgress(currentRouteProgress => currentRouteProgress + 10);
+      }, 500);
+    });
+
+    router.events.on("routeChangeComplete", () => {
+      clearInterval(timer);
+      setRouteProgress(100);
+      timeoutTimer = setTimeout(() => setRouteProgress(0), 250);
+    });
+
+    return () => clearTimeout(timeoutTimer);
+  }, [router.events]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
+      {routeProgress !== 0 && <Progress className="sticky top-0 left-0 right-0 z-50 h-1 rounded-none" value={routeProgress} />}
         <LayoutComponent>
           <>
             <Head>
@@ -49,7 +77,7 @@ export default function App({
                 --font-sans: ${fontSans.style.fontFamily};
               }
             `}</style>
-            <main>
+            <main className="col-span-3 sm:col-span-1">
               <Component {...pageProps} />
             </main>
           </>
