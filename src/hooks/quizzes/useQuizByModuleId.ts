@@ -9,13 +9,11 @@ const fetchQuizByModuleId = async (
   moduleId: string,
   abortSignal?: AbortSignal
 ) => {
-  const { data } = await serverRequest<IQuiz>(
-    HTTP_METHODS.GET,
-    SERVER_API_ENDPOINTS.GET_QUIZ_BY_MODULE + `/${moduleId}/quiz`,
-    undefined,
-    undefined,
-    abortSignal
-  );
+  const { data } = await serverRequest<IQuiz>({
+    method: HTTP_METHODS.GET,
+    endPoint: SERVER_API_ENDPOINTS.GET_QUIZ_BY_MODULE + `/${moduleId}/quiz`,
+    signal: abortSignal,
+  });
 
   return data;
 };

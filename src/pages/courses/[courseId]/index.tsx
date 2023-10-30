@@ -19,6 +19,9 @@ import {
 } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/queryKeyFactory";
 import Link from "next/link";
+import { useRegisterCourse } from "@/hooks/courses/useRegisterCourse";
+import { errorToast } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 const Course = ({
   dehydratedState,
@@ -28,6 +31,15 @@ const Course = ({
   const courseId = router.query.courseId as string;
 
   const { data: courseDetails } = useCourseById(courseId);
+  const { mutateAsync, isPending } = useRegisterCourse();
+
+  const registerCourse = async () => {
+    try {
+      await mutateAsync({ courseId });
+    } catch (error) {
+      errorToast(error);
+    }
+  };
 
   return (
     <HydrationBoundary state={dehydratedState}>
@@ -43,15 +55,25 @@ const Course = ({
                 className="rounded-lg aspect-[2/1]"
               />
               <h1 className="text-4xl font-bold">{courseDetails.title}</h1>
+              <div className="flex flex-wrap gap-2 font-medium">
+                <Badge variant={'secondary'} className="w-fit">{courseDetails._count.modules} Modules</Badge>
+                <Badge variant={'secondary'} className="w-fit">{courseDetails._count.enrollments} Enrollments</Badge>
+              </div>
               <div className="pt-6 flex justify-between items-center gap-4 flex-wrap">
-                <span>{courseDetails.level}</span>
+                <span className="font-bold text-lg">{courseDetails.level}</span>
                 <Button
                   variant="secondary"
                   size={"lg"}
                   type="button"
                   className="text-base"
+                  disabled={isPending}
+                  onClick={registerCourse}
                 >
-                  Start Course
+                  {isPending ? (
+                    <Icons.spinner className="h-6 w-6 animate-spin" />
+                  ) : (
+                    "Start Course"
+                  )}
                 </Button>
               </div>
             </div>
@@ -83,7 +105,9 @@ const Course = ({
                       {idx + 1}
                     </span>
                     <div className="flex flex-col text-left items-start gap-2 whitespace-break-spaces">
-                      <p className="text-base [overflow-wrap:anywhere]">{module.title}</p>
+                      <p className="text-base [overflow-wrap:anywhere]">
+                        {module.title}
+                      </p>
                       <p className="text-sm font-thin">
                         {module._count.lectures} Lectures
                       </p>

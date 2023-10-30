@@ -13,6 +13,7 @@ export interface ICourse {
 
 export interface ICourseCount {
   modules: number;
+  enrollments: number;
 }
 
 export interface Module {

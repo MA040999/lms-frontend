@@ -12,35 +12,40 @@ export const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ account, profile }) {
+    async signIn({ profile }) {
+      // try {
+      //   const abc = await serverRequest({
+      //     method: HTTP_METHODS.POST,
+      //     endPoint: SERVER_API_ENDPOINTS.ADD_NEW_USER,
+      //     body: {
+      //       googleId: profile?.sub,
+      //       name: profile?.name,
+      //       email: profile?.email,
+      //       image: profile?.image,
+      //     },
+      //   });
+      //   console.log("🚀 ~ abc:", abc);
 
-        // try {
-        //   await serverRequest(HTTP_METHODS.POST, SERVER_API_ENDPOINTS.REGISTER, {
-        //     id: profile?.sub,
-        //     name: profile?.name,
-        //     email: profile?.email,
-        //     image: profile?.image
-        //   });
-
-        //   return true;
-        // } catch (error) {
-        //   return false;
-        // }
+      //   return true;
+      // } catch (error) {
+      //   console.log("🚀 ~ error:", error);
+      //   return false;
+      // }
       return true;
     },
     async jwt({ token, account }) {
       if (account) {
-        token.accessToken = account.id_token
+        token.accessToken = account.id_token;
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
-      session.accessToken = token.accessToken as string
-      return session
+      session.accessToken = token.accessToken as string;
+      return session;
     },
     async redirect({ baseUrl }) {
-      return baseUrl
-    }
+      return baseUrl;
+    },
   },
 };
 

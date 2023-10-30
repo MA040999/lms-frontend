@@ -6,13 +6,11 @@ import SERVER_API_ENDPOINTS from "@/utils/serverApiEndpoints";
 import { queryKeys } from "@/lib/queryKeyFactory";
 
 const fetchCourses = async (abortSignal?: AbortSignal) => {
-  const { data } = await serverRequest<ICourse[]>(
-    HTTP_METHODS.GET,
-    SERVER_API_ENDPOINTS.GET_COURSES,
-    undefined,
-    undefined,
-    abortSignal
-  );
+  const { data } = await serverRequest<ICourse[]>({
+    method: HTTP_METHODS.GET,
+    endPoint: SERVER_API_ENDPOINTS.GET_COURSES,
+    signal: abortSignal,
+  });
 
   return data;
 };

@@ -8,6 +8,7 @@ import Head from "next/head";
 import { BASE_APP_PATH } from "@/utils/constants";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Progress } from "@/components/ui/progress"
+import { Toaster } from "@/components/ui/toaster";
 
 export const fontSans = FontSans({
   subsets: ["latin"],
@@ -80,6 +81,7 @@ export default function App({
             <main className="col-span-3 sm:col-span-1">
               <Component {...pageProps} />
             </main>
+            <Toaster />
           </>
         </LayoutComponent>
       </SessionProvider>
