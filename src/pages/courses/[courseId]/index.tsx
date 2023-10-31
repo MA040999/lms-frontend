@@ -3,7 +3,7 @@ import { Icons } from "@/components/ui/icons";
 import { fetchCourseById, useCourseById } from "@/hooks/courses/useCourseById";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -22,6 +22,7 @@ import Link from "next/link";
 import { useRegisterCourse } from "@/hooks/courses/useRegisterCourse";
 import { errorToast } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { useUserCourses } from "@/hooks/courses/useUserCourses";
 
 const Course = ({
   dehydratedState,
@@ -32,6 +33,9 @@ const Course = ({
 
   const { data: courseDetails } = useCourseById(courseId);
   const { mutateAsync, isPending } = useRegisterCourse();
+  const { data: userCourses } = useUserCourses();
+
+  const [isUserCourse, setIsUserCourse] = useState(false);
 
   const registerCourse = async () => {
     try {
@@ -40,6 +44,14 @@ const Course = ({
       errorToast(error);
     }
   };
+
+  useEffect(() => {
+    if (
+      userCourses?.enrollments.some((enrollment) => enrollment.id === courseId)
+    ) {
+      setIsUserCourse(true);
+    }
+  }, [userCourses, courseId]);
 
   return (
     <HydrationBoundary state={dehydratedState}>
@@ -56,25 +68,31 @@ const Course = ({
               />
               <h1 className="text-4xl font-bold">{courseDetails.title}</h1>
               <div className="flex flex-wrap gap-2 font-medium">
-                <Badge variant={'secondary'} className="w-fit">{courseDetails._count.modules} Modules</Badge>
-                <Badge variant={'secondary'} className="w-fit">{courseDetails._count.enrollments} Enrollments</Badge>
+                <Badge variant={"secondary"} className="w-fit">
+                  {courseDetails._count.modules} Modules
+                </Badge>
+                <Badge variant={"secondary"} className="w-fit">
+                  {courseDetails._count.enrollments} Enrollments
+                </Badge>
               </div>
               <div className="pt-6 flex justify-between items-center gap-4 flex-wrap">
                 <span className="font-bold text-lg">{courseDetails.level}</span>
-                <Button
-                  variant="secondary"
-                  size={"lg"}
-                  type="button"
-                  className="text-base"
-                  disabled={isPending}
-                  onClick={registerCourse}
-                >
-                  {isPending ? (
-                    <Icons.spinner className="h-6 w-6 animate-spin" />
-                  ) : (
-                    "Start Course"
-                  )}
-                </Button>
+                {!isUserCourse && (
+                  <Button
+                    variant="secondary"
+                    size={"lg"}
+                    type="button"
+                    className="text-base"
+                    disabled={isPending}
+                    onClick={registerCourse}
+                  >
+                    {isPending ? (
+                      <Icons.spinner className="h-6 w-6 animate-spin" />
+                    ) : (
+                      "Start Course"
+                    )}
+                  </Button>
+                )}
               </div>
             </div>
           )}
@@ -118,13 +136,19 @@ const Course = ({
                   {module.lectures.map((lecture) => (
                     <div key={lecture.id} className="flex gap-1 w-full ml-7">
                       <div className="w-[1.5px] min-h-full bg-secondary-foreground"></div>
-                      <Link
-                        key={lecture.id}
-                        className="flex flex-1 ml-3 mr-7 py-4 hover:bg-secondary rounded-md"
-                        href={`/courses/${module.courseId}/${lecture.id}`}
-                      >
-                        <p className="pl-4 underline">{lecture.title}</p>
-                      </Link>
+                      {isUserCourse ? (
+                        <Link
+                          className="flex flex-1 ml-3 mr-7 py-4 hover:bg-secondary rounded-md"
+                          href={`/courses/${module.courseId}/${lecture.id}`}
+                        >
+                          <p className="pl-4 underline">{lecture.title}</p>
+                        </Link>
+                      ) : (
+                        <span className="flex items-center cursor-not-allowed flex-1 ml-3 mr-7 py-4 text-secondary-foreground/50 rounded-md">
+                          <Icons.lock className="w-4 h-4"/>
+                          <p className="pl-4">{lecture.title}</p>
+                        </span>
+                      )}
                     </div>
                   ))}
                 </AccordionContent>

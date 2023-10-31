@@ -40,3 +40,8 @@ export interface Lecture {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IUserCourse {
+  enrollments: ICourse[];
+  courses:     ICourse[];
+}

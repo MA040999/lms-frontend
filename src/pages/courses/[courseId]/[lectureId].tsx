@@ -17,11 +17,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { cn } from "@/lib/utils";
+import { cn, errorToast } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ICourse } from "@/interfaces/courses/course.interface";
 import { Button } from "@/components/ui/button";
+import { usePostUserLectureProgress } from "@/hooks/courses/usePostUserLectureProgress";
 
 interface SidebarContentProps {
   lectureId: string;
@@ -83,18 +84,41 @@ const LectureContent = ({
   dehydratedState,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [content, setContent] = useState("");
+  const [previousLectureId, setPreviousLectureId] = useState("");
+  const [nextLectureId, setNextLectureId] = useState("");
+  const [moduleId, setModuleId] = useState("");
+
   const router = useRouter();
 
   const courseId = router.query.courseId as string;
   const lectureId = router.query.lectureId as string;
 
   const { data: courseDetails } = useCourseById(courseId);
+  const { mutateAsync, isPending } = usePostUserLectureProgress();
+
+  const handleNextLecture = async () => {
+    try {
+      await mutateAsync({ courseId, lectureId, moduleId });
+    } catch (error) {
+      errorToast(error);
+      return;
+    }
+
+    router.push(`/courses/${courseId}/${nextLectureId}`);
+  };
+
+  const handlePreviousLecture = async () => {
+    router.push(`/courses/${courseId}/${previousLectureId}`);
+  };
 
   useEffect(() => {
     courseDetails?.modules.find((module) =>
-      module.lectures.find((lecture) => {
+      module.lectures.find((lecture, idx) => {
         if (lecture.id === lectureId) {
           setContent(lecture.content);
+          setModuleId(module.id);
+          setNextLectureId(module.lectures[idx + 1]?.id);
+          setPreviousLectureId(module.lectures[idx - 1]?.id);
           return true;
         }
       })
@@ -152,10 +176,42 @@ const LectureContent = ({
             <Icons.arrowRight className="mr-3 h-6 w-6 rotate-180 flex-shrink-0" />
             Back to Course Home
           </Link>
-          <article
-            dangerouslySetInnerHTML={{ __html: content }}
-            className="prose prose-blue p-6"
-          />
+          <div className="pb-28">
+            <article
+              dangerouslySetInnerHTML={{
+                __html: content,
+              }}
+              className="prose prose-blue p-6 pb-12"
+            />
+            <div className="flex justify-between items-center gap-4 px-6">
+              {previousLectureId && (
+                <Button
+                  type="button"
+                  disabled={isPending}
+                  className="px-4 py-2 gap-2"
+                  onClick={handlePreviousLecture}
+                >
+                  <Icons.arrowRight className="h-6 w-6 rotate-180 flex-shrink-0" />
+                  Back
+                </Button>
+              )}
+              {nextLectureId && (
+                <Button
+                  type="button"
+                  disabled={isPending}
+                  className="px-4 py-2 gap-2 ml-auto"
+                  onClick={handleNextLecture}
+                >
+                  Next
+                  {isPending ? (
+                    <Icons.spinner className="h-6 w-6 flex-shrink-0 animate-spin" />
+                  ) : (
+                    <Icons.arrowRight className="h-6 w-6 flex-shrink-0" />
+                  )}
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </HydrationBoundary>
