@@ -15,6 +15,14 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
   const token = await getToken({ req });
   const isAuthenticated = !!token;
 
+  if (pathname.startsWith('/login') && token?.error) {
+    return NextResponse.next();
+  }
+
+  if (token?.error === "RefreshAccessTokenError") {
+    return NextResponse.redirect(new URL(BASE_APP_PATH + 'login', req.url));
+  }
+
   if (pathname.startsWith('/login') && isAuthenticated) {
     return NextResponse.redirect(new URL(BASE_APP_PATH, req.url));
   }

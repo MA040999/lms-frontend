@@ -72,7 +72,7 @@ export default function Home() {
                       <CardTitle>{course.title}</CardTitle>
                     </CardContent>
                     <CardFooter className="flex justify-between pt-4 flex-col sm:flex-row gap-4">
-                      <span>{course.level}</span>
+                      <span className="font-bold">{course.level}</span>
                       <Button
                         variant="outline"
                         type="button"
