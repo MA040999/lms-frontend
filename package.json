@@ -28,6 +28,7 @@
     "axios": "^1.5.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "html-to-image": "^1.11.11",
     "next": "13.5.5",
     "next-auth": "^4.23.2",
     "react": "^18",
