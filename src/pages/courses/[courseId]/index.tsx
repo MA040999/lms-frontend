@@ -47,7 +47,7 @@ const Course = ({
 
   useEffect(() => {
     if (
-      userCourses?.enrollments.some((enrollment) => enrollment.id === courseId)
+      userCourses?.enrollments?.some((enrollment) => enrollment.id === courseId)
     ) {
       setIsUserCourse(true);
     }

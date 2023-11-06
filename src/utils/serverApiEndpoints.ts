@@ -4,6 +4,8 @@ enum SERVER_API_ENDPOINTS {
   //Course Endpoints
   GET_COURSES = '/course',
   GET_USER_COURSES = '/course/user',
+  GET_USER_COURSE_PROGRESS = '/course/user/',
+  GET_USER_COURSE_VERIFY_CERTIFICATE = '/course/verify/',
   ENROLL_COURSE = '/course/enrollment',
   POST_USER_LECTURE_PROGRESS = '/course/lecture/user/progress',
   

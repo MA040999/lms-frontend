@@ -39,6 +39,7 @@ export interface Lecture {
   content: string;
   createdAt: Date;
   updatedAt: Date;
+  isWatched: boolean;
 }
 
 export interface IUserCourse {

@@ -26,22 +26,36 @@ import {
 import { cn, errorToast } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { ICourse } from "@/interfaces/courses/course.interface";
+import { ICourse, Module } from "@/interfaces/courses/course.interface";
 import { Button } from "@/components/ui/button";
 import { usePostUserLectureProgress } from "@/hooks/courses/usePostUserLectureProgress";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { toPng } from "html-to-image";
+import {
+  fetchUserCourseProgress,
+  useUserCourseProgress,
+} from "@/hooks/courses/useUserCourseProgress";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import {
+  fetchUserCourseVerifyCertificate,
+  useUserCourseVerifyCertificate,
+} from "@/hooks/courses/useUserCourseVerifyCertificate";
 
 interface SidebarContentProps {
   lectureId: string;
   courseDetails: ICourse | undefined;
+  userCourseProgress: Module[] | undefined;
+  userCourseVerifyCertificate: boolean | undefined;
   setIsCourseCertificateActive: Dispatch<SetStateAction<boolean>>;
 }
 
 const SidebarContent = ({
   courseDetails,
   lectureId,
+  userCourseProgress,
+  userCourseVerifyCertificate,
   setIsCourseCertificateActive,
 }: SidebarContentProps) => {
   return (
@@ -49,7 +63,7 @@ const SidebarContent = ({
       <div className="p-5">
         <h3 className="text-lg font-medium">{courseDetails?.title}</h3>
         <Accordion type="multiple" className="w-full mt-8">
-          {courseDetails?.modules.map((module) => (
+          {userCourseProgress?.map((module) => (
             <AccordionItem
               key={module.id}
               value={module.id}
@@ -63,7 +77,16 @@ const SidebarContent = ({
               <AccordionContent>
                 {module.lectures.map((lecture) => (
                   <div key={lecture.id} className="flex gap-1 w-full ml-2">
-                    <div className="w-[1.5px] min-h-full bg-secondary-foreground"></div>
+                    <div className="relative w-[1.5px] min-h-full bg-secondary-foreground">
+                      <div
+                        className={cn(
+                          "absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] bg-secondary w-[12px] h-[12px] border-secondary-foreground border rounded-full",
+                          lecture.isWatched
+                            ? "bg-green-500 border-green-500"
+                            : ""
+                        )}
+                      ></div>
+                    </div>
                     <Link
                       key={lecture.id}
                       className={cn(
@@ -88,14 +111,16 @@ const SidebarContent = ({
               </AccordionContent>
             </AccordionItem>
           ))}
-          <Button
-            type="button"
-            className="px-4 w-full py-8 font-bold text-sm sm:text-base gap-3 my-10"
-            onClick={() => setIsCourseCertificateActive(true)}
-          >
-            <Icons.trophy className="h-6 w-6 flex-shrink-0" />
-            Course Certificate
-          </Button>
+          {userCourseVerifyCertificate && (
+            <Button
+              type="button"
+              className="px-4 w-full py-8 font-bold text-sm sm:text-base gap-3 my-10"
+              onClick={() => setIsCourseCertificateActive(true)}
+            >
+              <Icons.trophy className="h-6 w-6 flex-shrink-0" />
+              Course Certificate
+            </Button>
+          )}
         </Accordion>
       </div>
     </>
@@ -106,6 +131,7 @@ const LectureContent = ({
   dehydratedState,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [content, setContent] = useState("");
+  const [isLectureWatched, setIsLectureWatched] = useState(false);
   const [previousLectureId, setPreviousLectureId] = useState("");
   const [nextLectureId, setNextLectureId] = useState("");
   const [moduleId, setModuleId] = useState("");
@@ -124,17 +150,33 @@ const LectureContent = ({
   const lectureId = router.query.lectureId as string;
 
   const { data: courseDetails } = useCourseById(courseId);
+  const { data: userCourseProgress } = useUserCourseProgress(courseId);
+  const { data: userCourseVerifyCertificate } =
+    useUserCourseVerifyCertificate(courseId);
   const { mutateAsync, isPending } = usePostUserLectureProgress();
 
   const handleNextLecture = async () => {
+    if (!isLectureWatched) {
+      try {
+        await mutateAsync({ courseId, lectureId, moduleId });
+      } catch (error) {
+        errorToast(error);
+        return;
+      }
+    }
+
+    router.push(`/courses/${courseId}/${nextLectureId}`);
+  };
+
+  const handleMarkComplete = async () => {
+    if (isLectureWatched) return;
+
     try {
       await mutateAsync({ courseId, lectureId, moduleId });
     } catch (error) {
       errorToast(error);
       return;
     }
-
-    router.push(`/courses/${courseId}/${nextLectureId}`);
   };
 
   const handlePreviousLecture = async () => {
@@ -144,14 +186,14 @@ const LectureContent = ({
   const htmlToImageConvert = () => {
     if (!elementRef.current) return;
 
-    setIsCertificateDownloading(true)
+    setIsCertificateDownloading(true);
     toPng(elementRef.current, { cacheBust: false })
       .then((dataUrl) => {
         const link = document.createElement("a");
         link.download = `${courseDetails?.title} Course Certificate - Gufhtugu.png`;
         link.href = dataUrl;
         link.click();
-        setIsCertificateDownloading(false)
+        setIsCertificateDownloading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -159,10 +201,11 @@ const LectureContent = ({
   };
 
   useEffect(() => {
-    courseDetails?.modules.find((module) =>
+    userCourseProgress?.find((module) =>
       module.lectures.find((lecture, idx) => {
         if (lecture.id === lectureId) {
           setContent(lecture.content);
+          setIsLectureWatched(lecture.isWatched);
           setModuleId(module.id);
           setNextLectureId(module.lectures[idx + 1]?.id);
           setPreviousLectureId(module.lectures[idx - 1]?.id);
@@ -170,7 +213,7 @@ const LectureContent = ({
         }
       })
     );
-  }, [courseDetails, lectureId]);
+  }, [userCourseProgress, lectureId]);
 
   return (
     <HydrationBoundary state={dehydratedState}>
@@ -194,6 +237,8 @@ const LectureContent = ({
                 <SidebarContent
                   courseDetails={courseDetails}
                   lectureId={lectureId}
+                  userCourseVerifyCertificate={userCourseVerifyCertificate}
+                  userCourseProgress={userCourseProgress}
                   setIsCourseCertificateActive={setIsCourseCertificateActive}
                 />
               </ScrollArea>
@@ -218,6 +263,8 @@ const LectureContent = ({
             <SidebarContent
               courseDetails={courseDetails}
               lectureId={lectureId}
+              userCourseVerifyCertificate={userCourseVerifyCertificate}
+              userCourseProgress={userCourseProgress}
               setIsCourseCertificateActive={setIsCourseCertificateActive}
             />
           </ScrollArea>
@@ -291,7 +338,7 @@ const LectureContent = ({
                       Back
                     </Button>
                   )}
-                  {nextLectureId && (
+                  {nextLectureId ? (
                     <Button
                       type="button"
                       disabled={isPending}
@@ -305,6 +352,23 @@ const LectureContent = ({
                         <Icons.arrowRight className="h-6 w-6 flex-shrink-0" />
                       )}
                     </Button>
+                  ) : (
+                    !isLectureWatched && (
+                      <Button
+                        type="button"
+                        variant={"outline"}
+                        disabled={isPending}
+                        className="px-4 py-2 gap-2 ml-auto"
+                        onClick={handleMarkComplete}
+                      >
+                        {isPending ? (
+                          <Icons.spinner className="h-5 w-5 flex-shrink-0 animate-spin" />
+                        ) : (
+                          <Icons.checkMark className="h-5 w-5 flex-shrink-0" />
+                        )}
+                        Mark as complete
+                      </Button>
+                    )
                   )}
                 </div>
               </>
@@ -323,9 +387,36 @@ export const getServerSideProps = (async (context) => {
 
   const courseId = context.query.courseId;
 
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  await queryClient.prefetchQuery({
+    ...queryKeys.courses.userCourseProgress(courseId as string),
+    queryFn: ({ signal }) =>
+      fetchUserCourseProgress(courseId as string, session.accessToken, signal),
+  });
+
   await queryClient.prefetchQuery({
     ...queryKeys.courses.detail(courseId as string),
     queryFn: ({ signal }) => fetchCourseById(courseId as string, signal),
+  });
+
+  await queryClient.prefetchQuery({
+    ...queryKeys.courses.userCourseVerifyCertificate(courseId as string),
+    queryFn: ({ signal }) =>
+      fetchUserCourseVerifyCertificate(
+        courseId as string,
+        session.accessToken,
+        signal
+      ),
   });
 
   return {
