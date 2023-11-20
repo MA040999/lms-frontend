@@ -52,6 +52,10 @@
   div#__next {
     height: 100%;
   }
+
+  .lecture-images-container {
+    min-width: 100%;
+  }
 }
 
 @layer base {

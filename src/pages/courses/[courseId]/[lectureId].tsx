@@ -324,7 +324,7 @@ const LectureContent = ({
                   dangerouslySetInnerHTML={{
                     __html: content,
                   }}
-                  className="prose prose-blue p-6 pb-12"
+                  className="prose prose-blue min-w-full pb-12 lecture-images-container"
                 />
                 <div className="flex justify-between items-center gap-4 px-6">
                   {previousLectureId && (
