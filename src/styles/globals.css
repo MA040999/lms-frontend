@@ -53,7 +53,7 @@
     height: 100%;
   }
 
-  .lecture-images-container {
+  .lecture-images-container > img {
     min-width: 100%;
   }
 }
