@@ -150,22 +150,30 @@ const LectureContent = ({
   const lectureId = router.query.lectureId as string;
 
   const { data: courseDetails } = useCourseById(courseId);
-  const { data: userCourseProgress } = useUserCourseProgress(courseId);
-  const { data: userCourseVerifyCertificate } =
-    useUserCourseVerifyCertificate(courseId);
+  const { data: userCourseProgress, refetch: refetchUserCourseProgress } =
+    useUserCourseProgress(courseId);
+  const {
+    data: userCourseVerifyCertificate,
+    refetch: refetchUserCourseVerifyCertificate,
+  } = useUserCourseVerifyCertificate(courseId);
   const { mutateAsync, isPending } = usePostUserLectureProgress();
+  const [isRouteChanging, setIsRouteChanging] = useState(false);
 
   const handleNextLecture = async () => {
+    setIsRouteChanging(true);
     if (!isLectureWatched) {
       try {
         await mutateAsync({ courseId, lectureId, moduleId });
+        refetchUserCourseProgress();
+        refetchUserCourseVerifyCertificate();
       } catch (error) {
         errorToast(error);
         return;
       }
     }
 
-    router.push(`/courses/${courseId}/${nextLectureId}`);
+    await router.push(`/courses/${courseId}/${nextLectureId}`);
+    setIsRouteChanging(false);
   };
 
   const handleMarkComplete = async () => {
@@ -173,6 +181,8 @@ const LectureContent = ({
 
     try {
       await mutateAsync({ courseId, lectureId, moduleId });
+      refetchUserCourseProgress();
+      refetchUserCourseVerifyCertificate();
     } catch (error) {
       errorToast(error);
       return;
@@ -180,7 +190,9 @@ const LectureContent = ({
   };
 
   const handlePreviousLecture = async () => {
-    router.push(`/courses/${courseId}/${previousLectureId}`);
+    setIsRouteChanging(true);
+    await router.push(`/courses/${courseId}/${previousLectureId}`);
+    setIsRouteChanging(false);
   };
 
   const htmlToImageConvert = () => {
@@ -199,6 +211,10 @@ const LectureContent = ({
         console.log(err);
       });
   };
+
+  useEffect(() => {
+    setIsCourseCertificateActive(false);
+  }, [lectureId]);
 
   useEffect(() => {
     userCourseProgress?.find((module) =>
@@ -330,23 +346,27 @@ const LectureContent = ({
                   {previousLectureId && (
                     <Button
                       type="button"
-                      disabled={isPending}
+                      disabled={isRouteChanging}
                       className="px-4 py-2 gap-2"
                       onClick={handlePreviousLecture}
                     >
-                      <Icons.arrowRight className="h-6 w-6 rotate-180 flex-shrink-0" />
+                      {isRouteChanging ? (
+                        <Icons.spinner className="h-6 w-6 flex-shrink-0 animate-spin" />
+                      ) : (
+                        <Icons.arrowRight className="h-6 w-6 rotate-180 flex-shrink-0" />
+                      )}
                       Back
                     </Button>
                   )}
                   {nextLectureId ? (
                     <Button
                       type="button"
-                      disabled={isPending}
+                      disabled={isRouteChanging}
                       className="px-4 py-2 gap-2 ml-auto"
                       onClick={handleNextLecture}
                     >
                       Next
-                      {isPending ? (
+                      {isRouteChanging ? (
                         <Icons.spinner className="h-6 w-6 flex-shrink-0 animate-spin" />
                       ) : (
                         <Icons.arrowRight className="h-6 w-6 flex-shrink-0" />
