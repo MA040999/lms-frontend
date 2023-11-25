@@ -358,7 +358,7 @@ const LectureContent = ({
                         type="button"
                         variant={"outline"}
                         disabled={isPending}
-                        className="px-4 py-2 gap-2 ml-auto"
+                        className="px-4 py-2 gap-2 ml-auto text-xs sm:text-sm"
                         onClick={handleMarkComplete}
                       >
                         {isPending ? (
