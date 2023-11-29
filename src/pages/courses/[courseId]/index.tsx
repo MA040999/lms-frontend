@@ -22,7 +22,9 @@ import Link from "next/link";
 import { useRegisterCourse } from "@/hooks/courses/useRegisterCourse";
 import { errorToast } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { useUserCourses } from "@/hooks/courses/useUserCourses";
+import { fetchUserCourses, useUserCourses } from "@/hooks/courses/useUserCourses";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 const Course = ({
   dehydratedState,
@@ -168,9 +170,25 @@ export const getServerSideProps = (async (context) => {
 
   const courseId = context.query.courseId;
 
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
   await queryClient.prefetchQuery({
     ...queryKeys.courses.detail(courseId as string),
     queryFn: ({ signal }) => fetchCourseById(courseId as string, signal),
+  });
+
+  await queryClient.prefetchQuery({
+    ...queryKeys.courses.list,
+    queryFn: ({ signal }) => fetchUserCourses(session.accessToken, signal),
   });
 
   return {
