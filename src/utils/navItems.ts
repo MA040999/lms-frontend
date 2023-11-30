@@ -18,5 +18,20 @@ export const navItems: NavItems = {
       href: "/",
       icon: 'home'
     },
+    {
+      title: "Explore",
+      href: "/explore",
+      icon: 'search',
+    },
+    {
+      title: "Projects",
+      href: "/projects",
+      icon: 'puzzle',
+    },
+    {
+      title: "My Learnings",
+      href: "/learnings",
+      icon: 'academicCap',
+    },
   ],
 }

@@ -22,7 +22,7 @@ export function MainNav({ items }: MainNavProps) {
       <MobileSidebarNav items={navItems.sidebarNav}>
         <SheetTrigger className="sm:hidden" asChild>
           <Button variant="ghost" size={"icon"} className="h-full rounded-sm">
-            <Icons.menuIcon className="w-6 h-6" />
+            <Icons.menuIcon className="w-6 h-6 text-foreground" />
           </Button>
         </SheetTrigger>
       </MobileSidebarNav>
