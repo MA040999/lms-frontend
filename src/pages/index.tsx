@@ -43,7 +43,7 @@ function CourseList({ isLoading, courses }: CourseListProps) {
         })
       ) : courses.length === 0 ? (
         <div className="p-4 mt-8 flex flex-col items-center text-lg sm:text-2xl justify-center bg-primary/20 rounded-3xl text-primary">
-          <Icons.archieveX className="sm:w-40 sm:h-40 w-32 h-32"/>
+          <Icons.archieveX className="sm:w-40 sm:h-40 w-32 h-32" />
           <p className="font-bold">No courses found</p>
         </div>
       ) : (
@@ -51,9 +51,12 @@ function CourseList({ isLoading, courses }: CourseListProps) {
           <Link
             key={course.id}
             href={`/courses/${course.id}`}
-            className="w-[250px] sm:w-[350px]"
+            className="w-[250px] sm:w-[350px] h-full"
           >
-            <Card key={course.id} className="overflow-hidden w-full">
+            <Card
+              key={course.id}
+              className="overflow-hidden w-full h-full flex flex-col"
+            >
               <CardHeader className="relative h-36">
                 <Image
                   alt={`${course.title} course cover`}
@@ -64,9 +67,9 @@ function CourseList({ isLoading, courses }: CourseListProps) {
                 />
               </CardHeader>
               <CardContent className="pt-6">
-                <CardTitle>{course.title}</CardTitle>
+                <CardTitle className="urdu leading-[initial]">{course.title}</CardTitle>
               </CardContent>
-              <CardFooter className="flex justify-between pt-4 flex-col sm:flex-row gap-4">
+              <CardFooter className="flex justify-between pt-4 flex-col sm:flex-row gap-4 mt-auto">
                 <span className="font-bold">{course.level}</span>
                 <Button
                   variant="outline"

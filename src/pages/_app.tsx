@@ -1,19 +1,27 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Poppins as FontSans } from "next/font/google";
+import { Noto_Nastaliq_Urdu as NotoNastaliqUrdu } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 import { Fragment, useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import Head from "next/head";
 import { BASE_APP_PATH } from "@/utils/constants";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Progress } from "@/components/ui/progress"
+import { Progress } from "@/components/ui/progress";
 import { Toaster } from "@/components/ui/toaster";
 
 export const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
   weight: ["300", "400", "500", "700"],
+  display: "swap",
+});
+
+export const notoNastaliqUrdu = NotoNastaliqUrdu({
+  subsets: ["latin"],
+  variable: "--font-noto-nastaliq",
+  weight: ["400", "500", "700"],
   display: "swap",
 });
 
@@ -50,7 +58,7 @@ export default function App({
     router.events.on("routeChangeStart", () => {
       setRouteProgress(0);
       timer = setInterval(() => {
-        setRouteProgress(currentRouteProgress => currentRouteProgress + 5);
+        setRouteProgress((currentRouteProgress) => currentRouteProgress + 5);
       }, 800);
     });
 
@@ -66,7 +74,12 @@ export default function App({
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
-      {routeProgress !== 0 && <Progress className="sticky top-0 left-0 right-0 z-50 h-1 rounded-none" value={routeProgress} />}
+        {routeProgress !== 0 && (
+          <Progress
+            className="sticky top-0 left-0 right-0 z-50 h-1 rounded-none"
+            value={routeProgress}
+          />
+        )}
         <LayoutComponent>
           <>
             <Head>
@@ -76,6 +89,7 @@ export default function App({
             <style jsx global>{`
               :root {
                 --font-sans: ${fontSans.style.fontFamily};
+                --font-noto-nastaliq: ${notoNastaliqUrdu.style.fontFamily};
               }
             `}</style>
             <main className="col-span-3 sm:col-span-1">

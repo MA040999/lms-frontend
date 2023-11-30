@@ -22,7 +22,10 @@ import Link from "next/link";
 import { useRegisterCourse } from "@/hooks/courses/useRegisterCourse";
 import { errorToast } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { fetchUserCourses, useUserCourses } from "@/hooks/courses/useUserCourses";
+import {
+  fetchUserCourses,
+  useUserCourses,
+} from "@/hooks/courses/useUserCourses";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
@@ -68,7 +71,9 @@ const Course = ({
                 height={100}
                 className="rounded-lg aspect-[2/1]"
               />
-              <h1 className="text-4xl font-bold">{courseDetails.title}</h1>
+              <h1 className="text-4xl font-bold urdu leading-[initial]">
+                {courseDetails.title}
+              </h1>
               <div className="flex flex-wrap gap-2 font-medium">
                 <Badge variant={"secondary"} className="w-fit">
                   {courseDetails._count.modules} Modules
@@ -125,7 +130,7 @@ const Course = ({
                       {idx + 1}
                     </span>
                     <div className="flex flex-col text-left items-start gap-2 whitespace-break-spaces">
-                      <p className="text-base [overflow-wrap:anywhere]">
+                      <p className="text-base [overflow-wrap:anywhere] urdu leading-[initial]">
                         {module.title}
                       </p>
                       <p className="text-sm font-thin">
@@ -143,12 +148,12 @@ const Course = ({
                           className="flex flex-1 ml-3 mr-7 py-4 hover:bg-secondary rounded-md"
                           href={`/courses/${module.courseId}/${lecture.id}`}
                         >
-                          <p className="pl-4 underline">{lecture.title}</p>
+                          <p className="pl-4 underline urdu leading-[initial]">{lecture.title}</p>
                         </Link>
                       ) : (
                         <span className="flex items-center cursor-not-allowed flex-1 ml-3 mr-7 py-4 text-secondary-foreground/50 rounded-md">
-                          <Icons.lock className="w-4 h-4"/>
-                          <p className="pl-4">{lecture.title}</p>
+                          <Icons.lock className="w-4 h-4" />
+                          <p className="pl-4 urdu leading-[initial]">{lecture.title}</p>
                         </span>
                       )}
                     </div>

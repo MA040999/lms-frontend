@@ -61,7 +61,9 @@ const SidebarContent = ({
   return (
     <>
       <div className="p-5">
-        <h3 className="text-lg font-medium">{courseDetails?.title}</h3>
+        <h3 className="text-lg font-medium urdu leading-[initial]">
+          {courseDetails?.title}
+        </h3>
         <Accordion type="multiple" className="w-full mt-8">
           {userCourseProgress?.map((module) => (
             <AccordionItem
@@ -71,7 +73,9 @@ const SidebarContent = ({
             >
               <AccordionTrigger className="hover:no-underline rounded-md gap-2">
                 <div className="flex flex-col items-start gap-2">
-                  <p className="text-base text-left">{module.title}</p>
+                  <p className="text-base text-left urdu leading-[initial]">
+                    {module.title}
+                  </p>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
@@ -95,7 +99,9 @@ const SidebarContent = ({
                       )}
                       href={`/courses/${module.courseId}/${lecture.id}`}
                     >
-                      <p className="pl-4 pr-2">{lecture.title}</p>
+                      <p className="pl-4 pr-2 urdu leading-[initial]">
+                        {lecture.title}
+                      </p>
                     </Link>
                   </div>
                 ))}

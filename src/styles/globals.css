@@ -56,6 +56,10 @@
   .lecture-images-container > img {
     min-width: 100%;
   }
+
+  .urdu {
+    font-family: var(--font-noto-nastaliq), var(--font-sans);
+  }
 }
 
 @layer base {

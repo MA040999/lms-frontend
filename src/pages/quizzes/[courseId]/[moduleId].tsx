@@ -117,12 +117,14 @@ const ModuleQuiz = ({
         <div className="flex flex-col items-center gap-6 p-4 sm:p-10">
           {!quiz ? (
             <h1 className="text-2xl text-center font-bold">
-              No Quiz Available for {module?.title}
+              No Quiz Available for{" "}
+              <span className="urdu leading-[initial]">{module?.title}</span>
             </h1>
           ) : (
             <>
               <h1 className="text-2xl text-center font-bold">
-                Quiz on {module?.title}
+                Quiz on{" "}
+                <span className="urdu leading-[initial]">{module?.title}</span>
               </h1>
               <Card className="overflow-hidden w-full">
                 <Form {...form}>
@@ -132,7 +134,9 @@ const ModuleQuiz = ({
                         <span className="min-w-[2.5rem] flex items-center justify-center h-10 bg-primary text-primary-foreground rounded-sm border">
                           {currentIndex + 1}
                         </span>
-                        <p>{quiz?.questions[currentIndex].question}</p>
+                        <p className="urdu leading-[initial]">
+                          {quiz?.questions[currentIndex].question}
+                        </p>
                       </div>
                     </CardHeader>
                     <CardContent className="pt-6">
@@ -179,7 +183,7 @@ const ModuleQuiz = ({
                                             }
                                           >
                                             <div className="min-h-[2rem] grid grid-cols-[1fr_0.05fr] justify-between gap-9 items-center">
-                                              <FormLabel className="[overflow-wrap:_anywhere]">
+                                              <FormLabel className="[overflow-wrap:_anywhere] urdu leading-[initial]">
                                                 {option.text}
                                               </FormLabel>
                                               {currentOptionStatus ===
