@@ -10,6 +10,7 @@ import MobileSidebarNav from "./MobileSidebarNav";
 import { navItems } from "@/utils/navItems";
 import { SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
+import Image from "next/image";
 
 interface MainNavProps {
   items?: NavItem[];
@@ -27,7 +28,14 @@ export function MainNav({ items }: MainNavProps) {
         </SheetTrigger>
       </MobileSidebarNav>
       <Link href="/" className="flex items-center space-x-2">
-        <Icons.logo className="h-6 w-6 text-primary" />
+        <Image
+          src="/logo.jpeg"
+          alt="Logo"
+          className="mx-auto h-auto w-auto min-w-[59px] min-h-[44px] max-w-[65px] max-h-[95px]"
+          width={100}
+          height={100}
+          priority
+        />
       </Link>
       {items?.length ? (
         <nav className="flex gap-6 w-full">
@@ -38,7 +46,7 @@ export function MainNav({ items }: MainNavProps) {
                   key={index}
                   href={item.href}
                   className={cn(
-                    "flex items-center text-sm font-medium text-muted-foreground hover:text-secondary-foreground transition-colors",
+                    "hidden sm:flex items-center text-sm font-medium text-muted-foreground hover:text-secondary-foreground transition-colors",
                     item.disabled && "cursor-not-allowed opacity-80",
                     item.href === pathname && "text-secondary-foreground"
                   )}

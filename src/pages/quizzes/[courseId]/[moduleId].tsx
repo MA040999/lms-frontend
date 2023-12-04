@@ -35,6 +35,7 @@ import {
 import { Question } from "@/interfaces/quizzes/quiz.interface";
 import { fetchCourseById, useCourseById } from "@/hooks/courses/useCourseById";
 import { Module } from "@/interfaces/courses/course.interface";
+import Image from "next/image";
 
 const FormSchema = z.object({
   answer: z.string(),
@@ -103,7 +104,14 @@ const ModuleQuiz = ({
       <div className="grid grid-cols-1 grid-rows-[0fr_1fr] min-h-screen w-screen">
         <div className="sticky top-0 h-16 z-10 col-start-1 col-end-2 flex justify-between gap-6 md:gap-10 px-10 py-4 border-b bg-background">
           <Link href="/" className="flex items-center space-x-2">
-            <Icons.logo className="h-6 w-6 text-primary" />
+            <Image
+              src="/logo.jpeg"
+              alt="Logo"
+              className="mx-auto h-auto w-auto min-w-[59px] min-h-[44px] max-w-[65px] max-h-[95px]"
+              width={100}
+              height={100}
+              priority
+            />
           </Link>
           <Link
             href={`/courses/${courseDetails?.id}/${

@@ -267,7 +267,14 @@ const LectureContent = ({
             </SheetContent>
           </Sheet>
           <Link href="/" className="flex items-center space-x-2 md:pl-6">
-            <Icons.logo className="h-6 w-6 text-primary" />
+            <Image
+              src="/logo.jpeg"
+              alt="Logo"
+              className="mx-auto h-auto w-auto min-w-[59px] min-h-[44px] max-w-[65px] max-h-[95px]"
+              width={100}
+              height={100}
+              priority
+            />
           </Link>
         </div>
         <aside
