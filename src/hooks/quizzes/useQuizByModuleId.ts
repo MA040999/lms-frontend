@@ -11,7 +11,7 @@ const fetchQuizByModuleId = async (
 ) => {
   const { data } = await serverRequest<IQuiz>({
     method: HTTP_METHODS.GET,
-    endPoint: SERVER_API_ENDPOINTS.GET_QUIZ_BY_MODULE + `/${moduleId}/quiz`,
+    endPoint: SERVER_API_ENDPOINTS.GET_QUIZ_BY_MODULE + `${moduleId}/quiz`,
     signal: abortSignal,
   });
 

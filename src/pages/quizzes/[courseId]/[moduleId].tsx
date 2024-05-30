@@ -189,9 +189,10 @@ const ModuleQuiz = ({
                                                   correctOption.text) ||
                                               currentOptionStatus === false
                                             }
+                                            className="group"
                                           >
                                             <div className="min-h-[2rem] grid grid-cols-[1fr_0.05fr] justify-between gap-9 items-center">
-                                              <FormLabel className="[overflow-wrap:_anywhere] urdu leading-[initial]">
+                                              <FormLabel className="[overflow-wrap:_anywhere] urdu leading-[initial] group-disabled:cursor-not-allowed cursor-pointer">
                                                 {option.text}
                                               </FormLabel>
                                               {currentOptionStatus ===
